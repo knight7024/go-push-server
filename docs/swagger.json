@@ -1,0 +1,1282 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Push Server developed by Jongwoo Jeong",
+        "title": "Push Server API",
+        "contact": {},
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/project": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "프로젝트를 생성할 때 사용합니다.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Project"
+                ],
+                "summary": "프로젝트 생성",
+                "parameters": [
+                    {
+                        "description": "`Project` 예시",
+                        "name": "Project",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/project.Project"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/ent.Project"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/project/all": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "유저의 모든 프로젝트를 불러올 때 사용합니다.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Project"
+                ],
+                "summary": "모든 프로젝트 읽기",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ent.Project"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/project/{project_id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "유저의 프로젝트 하나를 불러올 때 사용합니다.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Project"
+                ],
+                "summary": "단일 프로젝트 읽기",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Project ID",
+                        "name": "project_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ent.Project"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "유저의 프로젝트 하나를 수정할 때 사용합니다.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Project"
+                ],
+                "summary": "단일 프로젝트 수정",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Project ID",
+                        "name": "project_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "`Project` 예시",
+                        "name": "Project",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/project.Project"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ent.Project"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "유저의 프로젝트 하나를 삭제할 때 사용합니다.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Project"
+                ],
+                "summary": "단일 프로젝트 삭제",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Project ID",
+                        "name": "project_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/push/message": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "여러 개의 단일 메시지를 전송할 때 사용합니다.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Firebase"
+                ],
+                "summary": "푸시 알림 전송",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "프로젝트의 `Client-Key`",
+                        "name": "X-Push-Client-Key",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "`Messages` 예시",
+                        "name": "Messages",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/firebase.Messages"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.FirebaseResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/push/multicast": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "하나의 메시지를 여러 기기에 전송할 때 사용합니다.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Firebase"
+                ],
+                "summary": "푸시 알림 전송",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "프로젝트의 `Client-Key`",
+                        "name": "X-Push-Client-Key",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "`WithCustomMulticastMessage` 예시",
+                        "name": "CustomMulticastMessage",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/firebase.CustomMulticastMessage"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.FirebaseResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/topic/subscribe": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "여러 기기를 주제에 구독시킬 때 사용합니다.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Firebase"
+                ],
+                "summary": "주제 구독",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "프로젝트의 `Client-Key`",
+                        "name": "X-Push-Client-Key",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "`TopicWithTokens` 예시",
+                        "name": "TopicWithTokens",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/firebase.TopicWithTokens"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.FirebaseResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/topic/unsubscribe": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "여러 기기를 구독 해제시킬 때 사용합니다.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Firebase"
+                ],
+                "summary": "주제 구독 해제",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "프로젝트의 `Client-Key`",
+                        "name": "X-Push-Client-Key",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "`TopicWithTokens` 예시",
+                        "name": "TopicWithTokens",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/firebase.TopicWithTokens"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.FirebaseResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/login": {
+            "post": {
+                "description": "유저가 로그인할 때 사용합니다.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "로그인",
+                "parameters": [
+                    {
+                        "description": "User 예시",
+                        "name": "User",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.AuthTokens"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.AuthTokens"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/logout": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "유저가 로그아웃할 때 사용합니다.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "로그아웃",
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/signup": {
+            "post": {
+                "description": "새로운 유저가 가입할 때 사용합니다.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "회원가입",
+                "parameters": [
+                    {
+                        "description": "User 예시",
+                        "name": "User",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/response.AuthTokens"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "ent.Project": {
+            "type": "object",
+            "properties": {
+                "client_key": {
+                    "description": "ClientKey holds the value of the \"client_key\" field.",
+                    "type": "string"
+                },
+                "created_at": {
+                    "description": "CreatedAt holds the value of the \"created_at\" field.",
+                    "type": "string"
+                },
+                "credentials": {
+                    "description": "Credentials holds the value of the \"credentials\" field.",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "edges": {
+                    "description": "Edges holds the relations/edges for other nodes in the graph.\nThe values are being populated by the ProjectQuery when eager-loading is set.",
+                    "$ref": "#/definitions/ent.ProjectEdges"
+                },
+                "id": {
+                    "description": "ID of the ent.",
+                    "type": "integer"
+                },
+                "project_id": {
+                    "description": "ProjectID holds the value of the \"project_id\" field.",
+                    "type": "string"
+                },
+                "project_name": {
+                    "description": "ProjectName holds the value of the \"project_name\" field.",
+                    "type": "string"
+                },
+                "updated_at": {
+                    "description": "UpdatedAt holds the value of the \"updated_at\" field.",
+                    "type": "string"
+                }
+            }
+        },
+        "ent.ProjectEdges": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "description": "User holds the value of the user edge.",
+                    "$ref": "#/definitions/ent.User"
+                }
+            }
+        },
+        "ent.User": {
+            "type": "object",
+            "properties": {
+                "edges": {
+                    "description": "Edges holds the relations/edges for other nodes in the graph.\nThe values are being populated by the UserQuery when eager-loading is set.",
+                    "$ref": "#/definitions/ent.UserEdges"
+                },
+                "id": {
+                    "description": "ID of the ent.",
+                    "type": "integer"
+                },
+                "username": {
+                    "description": "Username holds the value of the \"username\" field.",
+                    "type": "string"
+                }
+            }
+        },
+        "ent.UserEdges": {
+            "type": "object",
+            "properties": {
+                "projects": {
+                    "description": "Projects holds the value of the projects edge.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ent.Project"
+                    }
+                }
+            }
+        },
+        "firebase.CustomMulticastMessage": {
+            "type": "object",
+            "required": [
+                "notification"
+            ],
+            "properties": {
+                "android": {
+                    "$ref": "#/definitions/messaging.AndroidConfig"
+                },
+                "apns": {
+                    "$ref": "#/definitions/messaging.APNSConfig"
+                },
+                "condition": {
+                    "type": "string"
+                },
+                "data": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "notification": {
+                    "$ref": "#/definitions/messaging.Notification"
+                },
+                "tokens": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "topic": {
+                    "type": "string"
+                },
+                "webpush": {
+                    "$ref": "#/definitions/messaging.WebpushConfig"
+                }
+            }
+        },
+        "firebase.Messages": {
+            "type": "object",
+            "required": [
+                "messages"
+            ],
+            "properties": {
+                "messages": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/messaging.Message"
+                    }
+                }
+            }
+        },
+        "firebase.TopicWithTokens": {
+            "type": "object",
+            "required": [
+                "tokens",
+                "topic"
+            ],
+            "properties": {
+                "tokens": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "topic": {
+                    "type": "string"
+                }
+            }
+        },
+        "messaging.APNSConfig": {
+            "type": "object",
+            "properties": {
+                "fcm_options": {
+                    "$ref": "#/definitions/messaging.APNSFCMOptions"
+                },
+                "headers": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "payload": {
+                    "$ref": "#/definitions/messaging.APNSPayload"
+                }
+            }
+        },
+        "messaging.APNSFCMOptions": {
+            "type": "object",
+            "properties": {
+                "analytics_label": {
+                    "type": "string"
+                },
+                "image": {
+                    "type": "string"
+                }
+            }
+        },
+        "messaging.APNSPayload": {
+            "type": "object",
+            "properties": {
+                "aps": {
+                    "$ref": "#/definitions/messaging.Aps"
+                }
+            }
+        },
+        "messaging.AndroidConfig": {
+            "type": "object",
+            "properties": {
+                "collapse_key": {
+                    "type": "string"
+                },
+                "data": {
+                    "description": "if specified, overrides the Data field on Message type",
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "fcm_options": {
+                    "$ref": "#/definitions/messaging.AndroidFCMOptions"
+                },
+                "notification": {
+                    "$ref": "#/definitions/messaging.AndroidNotification"
+                },
+                "priority": {
+                    "description": "one of \"normal\" or \"high\"",
+                    "type": "string"
+                },
+                "restricted_package_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "messaging.AndroidFCMOptions": {
+            "type": "object",
+            "properties": {
+                "analytics_label": {
+                    "type": "string"
+                }
+            }
+        },
+        "messaging.AndroidNotification": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "description": "if specified, overrides the Body field of the Notification type",
+                    "type": "string"
+                },
+                "body_loc_args": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "body_loc_key": {
+                    "type": "string"
+                },
+                "channel_id": {
+                    "type": "string"
+                },
+                "click_action": {
+                    "type": "string"
+                },
+                "color": {
+                    "description": "notification color in #RRGGBB format",
+                    "type": "string"
+                },
+                "default_light_settings": {
+                    "type": "boolean"
+                },
+                "default_sound": {
+                    "type": "boolean"
+                },
+                "default_vibrate_timings": {
+                    "type": "boolean"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "light_settings": {
+                    "$ref": "#/definitions/messaging.LightSettings"
+                },
+                "local_only": {
+                    "type": "boolean"
+                },
+                "notification_count": {
+                    "type": "integer"
+                },
+                "sound": {
+                    "type": "string"
+                },
+                "sticky": {
+                    "type": "boolean"
+                },
+                "tag": {
+                    "type": "string"
+                },
+                "ticker": {
+                    "type": "string"
+                },
+                "title": {
+                    "description": "if specified, overrides the Title field of the Notification type",
+                    "type": "string"
+                },
+                "title_loc_args": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "title_loc_key": {
+                    "type": "string"
+                }
+            }
+        },
+        "messaging.Aps": {
+            "type": "object",
+            "properties": {
+                "badge": {
+                    "type": "integer"
+                },
+                "category": {
+                    "type": "string"
+                },
+                "thread-id": {
+                    "type": "string"
+                }
+            }
+        },
+        "messaging.FCMOptions": {
+            "type": "object",
+            "properties": {
+                "analytics_label": {
+                    "type": "string"
+                }
+            }
+        },
+        "messaging.LightSettings": {
+            "type": "object",
+            "properties": {
+                "color": {
+                    "type": "string"
+                },
+                "lightOffDurationMillis": {
+                    "type": "integer"
+                },
+                "lightOnDurationMillis": {
+                    "type": "integer"
+                }
+            }
+        },
+        "messaging.Message": {
+            "type": "object",
+            "properties": {
+                "android": {
+                    "$ref": "#/definitions/messaging.AndroidConfig"
+                },
+                "apns": {
+                    "$ref": "#/definitions/messaging.APNSConfig"
+                },
+                "condition": {
+                    "type": "string"
+                },
+                "data": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "fcm_options": {
+                    "$ref": "#/definitions/messaging.FCMOptions"
+                },
+                "notification": {
+                    "$ref": "#/definitions/messaging.Notification"
+                },
+                "token": {
+                    "type": "string"
+                },
+                "webpush": {
+                    "$ref": "#/definitions/messaging.WebpushConfig"
+                }
+            }
+        },
+        "messaging.Notification": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "type": "string"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "messaging.WebpushConfig": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "fcm_options": {
+                    "$ref": "#/definitions/messaging.WebpushFcmOptions"
+                },
+                "headers": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "notification": {
+                    "$ref": "#/definitions/messaging.WebpushNotification"
+                }
+            }
+        },
+        "messaging.WebpushFcmOptions": {
+            "type": "object",
+            "properties": {
+                "link": {
+                    "type": "string"
+                }
+            }
+        },
+        "messaging.WebpushNotification": {
+            "type": "object",
+            "properties": {
+                "actions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/messaging.WebpushNotificationAction"
+                    }
+                },
+                "badge": {
+                    "type": "string"
+                },
+                "body": {
+                    "description": "if specified, overrides the Body field of the Notification type",
+                    "type": "string"
+                },
+                "customData": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "data": {},
+                "dir": {
+                    "description": "one of 'ltr' or 'rtl'",
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "lang": {
+                    "type": "string"
+                },
+                "renotify": {
+                    "type": "boolean"
+                },
+                "requireInteraction": {
+                    "type": "boolean"
+                },
+                "silent": {
+                    "type": "boolean"
+                },
+                "tag": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "integer"
+                },
+                "title": {
+                    "description": "if specified, overrides the Title field of the Notification type",
+                    "type": "string"
+                },
+                "vibrate": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "messaging.WebpushNotificationAction": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "project.Project": {
+            "type": "object",
+            "properties": {
+                "credentials": {
+                    "type": "string",
+                    "format": "base64"
+                },
+                "project_id": {
+                    "type": "string"
+                },
+                "project_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.AuthTokens": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "refresh_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.FirebaseResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "object"
+                    }
+                },
+                "failure_count": {
+                    "type": "integer"
+                },
+                "success_count": {
+                    "type": "integer"
+                }
+            }
+        },
+        "response.errorResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "object"
+                    }
+                },
+                "error_code": {
+                    "type": "string"
+                },
+                "error_message": {
+                    "type": "string"
+                },
+                "reason": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.User": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "maxLength": 32,
+                    "minLength": 8
+                },
+                "username": {
+                    "type": "string",
+                    "maxLength": 32,
+                    "minLength": 4
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

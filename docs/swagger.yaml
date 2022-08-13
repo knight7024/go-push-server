@@ -1,0 +1,842 @@
+definitions:
+  ent.Project:
+    properties:
+      client_key:
+        description: ClientKey holds the value of the "client_key" field.
+        type: string
+      created_at:
+        description: CreatedAt holds the value of the "created_at" field.
+        type: string
+      credentials:
+        description: Credentials holds the value of the "credentials" field.
+        items:
+          type: integer
+        type: array
+      edges:
+        $ref: '#/definitions/ent.ProjectEdges'
+        description: |-
+          Edges holds the relations/edges for other nodes in the graph.
+          The values are being populated by the ProjectQuery when eager-loading is set.
+      id:
+        description: ID of the ent.
+        type: integer
+      project_id:
+        description: ProjectID holds the value of the "project_id" field.
+        type: string
+      project_name:
+        description: ProjectName holds the value of the "project_name" field.
+        type: string
+      updated_at:
+        description: UpdatedAt holds the value of the "updated_at" field.
+        type: string
+    type: object
+  ent.ProjectEdges:
+    properties:
+      user:
+        $ref: '#/definitions/ent.User'
+        description: User holds the value of the user edge.
+    type: object
+  ent.User:
+    properties:
+      edges:
+        $ref: '#/definitions/ent.UserEdges'
+        description: |-
+          Edges holds the relations/edges for other nodes in the graph.
+          The values are being populated by the UserQuery when eager-loading is set.
+      id:
+        description: ID of the ent.
+        type: integer
+      username:
+        description: Username holds the value of the "username" field.
+        type: string
+    type: object
+  ent.UserEdges:
+    properties:
+      projects:
+        description: Projects holds the value of the projects edge.
+        items:
+          $ref: '#/definitions/ent.Project'
+        type: array
+    type: object
+  firebase.CustomMulticastMessage:
+    properties:
+      android:
+        $ref: '#/definitions/messaging.AndroidConfig'
+      apns:
+        $ref: '#/definitions/messaging.APNSConfig'
+      condition:
+        type: string
+      data:
+        additionalProperties:
+          type: string
+        type: object
+      notification:
+        $ref: '#/definitions/messaging.Notification'
+      tokens:
+        items:
+          type: string
+        type: array
+      topic:
+        type: string
+      webpush:
+        $ref: '#/definitions/messaging.WebpushConfig'
+    required:
+    - notification
+    type: object
+  firebase.Messages:
+    properties:
+      messages:
+        items:
+          $ref: '#/definitions/messaging.Message'
+        type: array
+    required:
+    - messages
+    type: object
+  firebase.TopicWithTokens:
+    properties:
+      tokens:
+        items:
+          type: string
+        type: array
+      topic:
+        type: string
+    required:
+    - tokens
+    - topic
+    type: object
+  messaging.APNSConfig:
+    properties:
+      fcm_options:
+        $ref: '#/definitions/messaging.APNSFCMOptions'
+      headers:
+        additionalProperties:
+          type: string
+        type: object
+      payload:
+        $ref: '#/definitions/messaging.APNSPayload'
+    type: object
+  messaging.APNSFCMOptions:
+    properties:
+      analytics_label:
+        type: string
+      image:
+        type: string
+    type: object
+  messaging.APNSPayload:
+    properties:
+      aps:
+        $ref: '#/definitions/messaging.Aps'
+    type: object
+  messaging.AndroidConfig:
+    properties:
+      collapse_key:
+        type: string
+      data:
+        additionalProperties:
+          type: string
+        description: if specified, overrides the Data field on Message type
+        type: object
+      fcm_options:
+        $ref: '#/definitions/messaging.AndroidFCMOptions'
+      notification:
+        $ref: '#/definitions/messaging.AndroidNotification'
+      priority:
+        description: one of "normal" or "high"
+        type: string
+      restricted_package_name:
+        type: string
+    type: object
+  messaging.AndroidFCMOptions:
+    properties:
+      analytics_label:
+        type: string
+    type: object
+  messaging.AndroidNotification:
+    properties:
+      body:
+        description: if specified, overrides the Body field of the Notification type
+        type: string
+      body_loc_args:
+        items:
+          type: string
+        type: array
+      body_loc_key:
+        type: string
+      channel_id:
+        type: string
+      click_action:
+        type: string
+      color:
+        description: 'notification color in #RRGGBB format'
+        type: string
+      default_light_settings:
+        type: boolean
+      default_sound:
+        type: boolean
+      default_vibrate_timings:
+        type: boolean
+      icon:
+        type: string
+      image:
+        type: string
+      light_settings:
+        $ref: '#/definitions/messaging.LightSettings'
+      local_only:
+        type: boolean
+      notification_count:
+        type: integer
+      sound:
+        type: string
+      sticky:
+        type: boolean
+      tag:
+        type: string
+      ticker:
+        type: string
+      title:
+        description: if specified, overrides the Title field of the Notification type
+        type: string
+      title_loc_args:
+        items:
+          type: string
+        type: array
+      title_loc_key:
+        type: string
+    type: object
+  messaging.Aps:
+    properties:
+      badge:
+        type: integer
+      category:
+        type: string
+      thread-id:
+        type: string
+    type: object
+  messaging.FCMOptions:
+    properties:
+      analytics_label:
+        type: string
+    type: object
+  messaging.LightSettings:
+    properties:
+      color:
+        type: string
+      lightOffDurationMillis:
+        type: integer
+      lightOnDurationMillis:
+        type: integer
+    type: object
+  messaging.Message:
+    properties:
+      android:
+        $ref: '#/definitions/messaging.AndroidConfig'
+      apns:
+        $ref: '#/definitions/messaging.APNSConfig'
+      condition:
+        type: string
+      data:
+        additionalProperties:
+          type: string
+        type: object
+      fcm_options:
+        $ref: '#/definitions/messaging.FCMOptions'
+      notification:
+        $ref: '#/definitions/messaging.Notification'
+      token:
+        type: string
+      webpush:
+        $ref: '#/definitions/messaging.WebpushConfig'
+    type: object
+  messaging.Notification:
+    properties:
+      body:
+        type: string
+      image:
+        type: string
+      title:
+        type: string
+    type: object
+  messaging.WebpushConfig:
+    properties:
+      data:
+        additionalProperties:
+          type: string
+        type: object
+      fcm_options:
+        $ref: '#/definitions/messaging.WebpushFcmOptions'
+      headers:
+        additionalProperties:
+          type: string
+        type: object
+      notification:
+        $ref: '#/definitions/messaging.WebpushNotification'
+    type: object
+  messaging.WebpushFcmOptions:
+    properties:
+      link:
+        type: string
+    type: object
+  messaging.WebpushNotification:
+    properties:
+      actions:
+        items:
+          $ref: '#/definitions/messaging.WebpushNotificationAction'
+        type: array
+      badge:
+        type: string
+      body:
+        description: if specified, overrides the Body field of the Notification type
+        type: string
+      customData:
+        additionalProperties: true
+        type: object
+      data: {}
+      dir:
+        description: one of 'ltr' or 'rtl'
+        type: string
+      icon:
+        type: string
+      image:
+        type: string
+      lang:
+        type: string
+      renotify:
+        type: boolean
+      requireInteraction:
+        type: boolean
+      silent:
+        type: boolean
+      tag:
+        type: string
+      timestamp:
+        type: integer
+      title:
+        description: if specified, overrides the Title field of the Notification type
+        type: string
+      vibrate:
+        items:
+          type: integer
+        type: array
+    type: object
+  messaging.WebpushNotificationAction:
+    properties:
+      action:
+        type: string
+      icon:
+        type: string
+      title:
+        type: string
+    type: object
+  project.Project:
+    properties:
+      credentials:
+        format: base64
+        type: string
+      project_id:
+        type: string
+      project_name:
+        type: string
+    type: object
+  response.AuthTokens:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+    type: object
+  response.FirebaseResponse:
+    properties:
+      data:
+        additionalProperties:
+          type: object
+        type: object
+      failure_count:
+        type: integer
+      success_count:
+        type: integer
+    type: object
+  response.errorResponse:
+    properties:
+      data:
+        additionalProperties:
+          type: object
+        type: object
+      error_code:
+        type: string
+      error_message:
+        type: string
+      reason:
+        type: string
+    type: object
+  user.User:
+    properties:
+      password:
+        maxLength: 32
+        minLength: 8
+        type: string
+      username:
+        maxLength: 32
+        minLength: 4
+        type: string
+    required:
+    - password
+    - username
+    type: object
+info:
+  contact: {}
+  description: Push Server developed by Jongwoo Jeong
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Push Server API
+  version: 1.0.0
+paths:
+  /api/project:
+    post:
+      consumes:
+      - application/json
+      description: 프로젝트를 생성할 때 사용합니다.
+      parameters:
+      - description: '`Project` 예시'
+        in: body
+        name: Project
+        required: true
+        schema:
+          $ref: '#/definitions/project.Project'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/ent.Project'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+      security:
+      - BearerAuth: []
+      summary: 프로젝트 생성
+      tags:
+      - Project
+  /api/project/{project_id}:
+    delete:
+      consumes:
+      - application/json
+      description: 유저의 프로젝트 하나를 삭제할 때 사용합니다.
+      parameters:
+      - description: Project ID
+        in: path
+        name: project_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+      security:
+      - BearerAuth: []
+      summary: 단일 프로젝트 삭제
+      tags:
+      - Project
+    get:
+      consumes:
+      - application/json
+      description: 유저의 프로젝트 하나를 불러올 때 사용합니다.
+      parameters:
+      - description: Project ID
+        in: path
+        name: project_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Project'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+      security:
+      - BearerAuth: []
+      summary: 단일 프로젝트 읽기
+      tags:
+      - Project
+    put:
+      consumes:
+      - application/json
+      description: 유저의 프로젝트 하나를 수정할 때 사용합니다.
+      parameters:
+      - description: Project ID
+        in: path
+        name: project_id
+        required: true
+        type: integer
+      - description: '`Project` 예시'
+        in: body
+        name: Project
+        required: true
+        schema:
+          $ref: '#/definitions/project.Project'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Project'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+      security:
+      - BearerAuth: []
+      summary: 단일 프로젝트 수정
+      tags:
+      - Project
+  /api/project/all:
+    get:
+      consumes:
+      - application/json
+      description: 유저의 모든 프로젝트를 불러올 때 사용합니다.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.Project'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+      security:
+      - BearerAuth: []
+      summary: 모든 프로젝트 읽기
+      tags:
+      - Project
+  /api/push/message:
+    post:
+      consumes:
+      - application/json
+      description: 여러 개의 단일 메시지를 전송할 때 사용합니다.
+      parameters:
+      - description: 프로젝트의 `Client-Key`
+        in: header
+        name: X-Push-Client-Key
+        required: true
+        type: string
+      - description: '`Messages` 예시'
+        in: body
+        name: Messages
+        required: true
+        schema:
+          $ref: '#/definitions/firebase.Messages'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.FirebaseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+      security:
+      - BearerAuth: []
+      summary: 푸시 알림 전송
+      tags:
+      - Firebase
+  /api/push/multicast:
+    post:
+      consumes:
+      - application/json
+      description: 하나의 메시지를 여러 기기에 전송할 때 사용합니다.
+      parameters:
+      - description: 프로젝트의 `Client-Key`
+        in: header
+        name: X-Push-Client-Key
+        required: true
+        type: string
+      - description: '`WithCustomMulticastMessage` 예시'
+        in: body
+        name: CustomMulticastMessage
+        required: true
+        schema:
+          $ref: '#/definitions/firebase.CustomMulticastMessage'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.FirebaseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+      security:
+      - BearerAuth: []
+      summary: 푸시 알림 전송
+      tags:
+      - Firebase
+  /api/topic/subscribe:
+    post:
+      consumes:
+      - application/json
+      description: 여러 기기를 주제에 구독시킬 때 사용합니다.
+      parameters:
+      - description: 프로젝트의 `Client-Key`
+        in: header
+        name: X-Push-Client-Key
+        required: true
+        type: string
+      - description: '`TopicWithTokens` 예시'
+        in: body
+        name: TopicWithTokens
+        required: true
+        schema:
+          $ref: '#/definitions/firebase.TopicWithTokens'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.FirebaseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+      security:
+      - BearerAuth: []
+      summary: 주제 구독
+      tags:
+      - Firebase
+  /api/topic/unsubscribe:
+    post:
+      consumes:
+      - application/json
+      description: 여러 기기를 구독 해제시킬 때 사용합니다.
+      parameters:
+      - description: 프로젝트의 `Client-Key`
+        in: header
+        name: X-Push-Client-Key
+        required: true
+        type: string
+      - description: '`TopicWithTokens` 예시'
+        in: body
+        name: TopicWithTokens
+        required: true
+        schema:
+          $ref: '#/definitions/firebase.TopicWithTokens'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.FirebaseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+      security:
+      - BearerAuth: []
+      summary: 주제 구독 해제
+      tags:
+      - Firebase
+  /api/user/login:
+    post:
+      consumes:
+      - application/json
+      description: 유저가 로그인할 때 사용합니다.
+      parameters:
+      - description: User 예시
+        in: body
+        name: User
+        required: true
+        schema:
+          $ref: '#/definitions/user.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.AuthTokens'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.AuthTokens'
+      summary: 로그인
+      tags:
+      - User
+  /api/user/logout:
+    get:
+      description: 유저가 로그아웃할 때 사용합니다.
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+      security:
+      - BearerAuth: []
+      summary: 로그아웃
+      tags:
+      - User
+  /api/user/signup:
+    post:
+      consumes:
+      - application/json
+      description: 새로운 유저가 가입할 때 사용합니다.
+      parameters:
+      - description: User 예시
+        in: body
+        name: User
+        required: true
+        schema:
+          $ref: '#/definitions/user.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.AuthTokens'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+      summary: 회원가입
+      tags:
+      - User
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
