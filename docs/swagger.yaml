@@ -337,13 +337,6 @@ definitions:
       project_name:
         type: string
     type: object
-  response.AuthTokens:
-    properties:
-      access_token:
-        type: string
-      refresh_token:
-        type: string
-    type: object
   response.FirebaseResponse:
     properties:
       data:
@@ -368,6 +361,18 @@ definitions:
       reason:
         type: string
     type: object
+  user.AuthTokens:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+    type: object
+  user.RefreshToken:
+    properties:
+      refresh_token:
+        type: string
+    type: object
   user.User:
     properties:
       password:
@@ -386,8 +391,8 @@ info:
   contact: {}
   description: Push Server developed by Jongwoo Jeong
   license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
+    name: MIT License
+    url: https://opensource.org/licenses/MIT
   title: Push Server API
   version: 1.0.0
 paths:
@@ -763,7 +768,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/response.AuthTokens'
+            $ref: '#/definitions/user.AuthTokens'
         "400":
           description: Bad Request
           schema:
@@ -775,7 +780,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/response.AuthTokens'
+            $ref: '#/definitions/response.errorResponse'
       summary: 로그인
       tags:
       - User
@@ -800,6 +805,40 @@ paths:
       summary: 로그아웃
       tags:
       - User
+  /api/user/refresh:
+    post:
+      consumes:
+      - application/json
+      description: Refresh Token을 이용해 만료된 Access 혹은 Refresh Token을 갱신할 때 사용합니다.
+      parameters:
+      - description: RefreshToken 예시
+        in: body
+        name: RefreshToken
+        required: true
+        schema:
+          $ref: '#/definitions/user.RefreshToken'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/user.AuthTokens'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+      summary: Access 및 Refresh Token 갱신
+      tags:
+      - User
   /api/user/signup:
     post:
       consumes:
@@ -817,8 +856,6 @@ paths:
       responses:
         "201":
           description: Created
-          schema:
-            $ref: '#/definitions/response.AuthTokens'
         "400":
           description: Bad Request
           schema:

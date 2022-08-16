@@ -2,6 +2,7 @@ package response
 
 type successBuilder struct {
 	statusCode int
+	message    string
 	data       interface{}
 }
 
@@ -18,6 +19,11 @@ func (rb *successBuilder) StatusCode(statusCode int) *successBuilder {
 	return rb
 }
 
+func (rb *successBuilder) Message(message string) *successBuilder {
+	rb.message = message
+	return rb
+}
+
 func (rb *successBuilder) Data(data interface{}) *successBuilder {
 	rb.data = data
 	return rb
@@ -26,6 +32,7 @@ func (rb *successBuilder) Data(data interface{}) *successBuilder {
 func (rb *successBuilder) Build() *successResponse {
 	return &successResponse{
 		StatusCode: rb.statusCode,
+		Message:    rb.message,
 		Data:       rb.data,
 	}
 }

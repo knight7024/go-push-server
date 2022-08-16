@@ -4,18 +4,6 @@ core:
   env: "dev" # dev / stage / prod
   secret_key:
 
-apis:
-  topic_subscribe: "/topic/subscribe"
-  topic_unsubscribe: "/topic/unsubscribe"
-  push_message_uri: "/push/message"
-  push_multicast_uri: "/push/multicast"
-  project_uri: "/project"
-  project_all_uri: "/project/all"
-  user_login_uri: "/user/login"
-  user_logout_uri: "/user/logout"
-  user_signup_uri: "/user/signup"
-  user_refresh_uri: "/user/refresh"
-
 datasource:
   username: ""
   password: ""

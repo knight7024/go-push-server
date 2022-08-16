@@ -1,6 +1,8 @@
 package response
 
-import "github.com/goccy/go-json"
+import (
+	"github.com/goccy/go-json"
+)
 
 type Response interface {
 	GetStatusCode() int
@@ -8,11 +10,29 @@ type Response interface {
 
 type successResponse struct {
 	StatusCode int         `json:"-"`
+	Message    string      `json:"success_message,omitempty"`
 	Data       interface{} `json:"data,omitempty" swaggertype:"object,object"`
 }
 
 func (s *successResponse) MarshalJSON() ([]byte, error) {
-	return json.Marshal(s.Data)
+	if s.Data != nil {
+		type rawMessage struct {
+			json.RawMessage
+		}
+		data, _ := json.Marshal(s.Data)
+		return json.Marshal(&struct {
+			Message     string `json:"success_message,omitempty"`
+			*rawMessage `json:",omitempty"`
+		}{
+			Message:    s.Message,
+			rawMessage: &rawMessage{data},
+		})
+	}
+	return json.Marshal(&struct {
+		Message string `json:"success_message,omitempty"`
+	}{
+		Message: s.Message,
+	})
 }
 
 func (s *successResponse) GetStatusCode() int {
