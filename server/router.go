@@ -3,7 +3,6 @@ package server
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/knight7024/go-push-server/common/config"
 	"github.com/knight7024/go-push-server/server/controller"
 	"github.com/knight7024/go-push-server/server/middleware"
 	swaggerFiles "github.com/swaggo/files"
@@ -24,22 +23,22 @@ func InitRouter() *gin.Engine {
 	apiURL.Use(middleware.CORS)
 	{
 		verifyAuth := apiURL.Group("")
-		verifyAuth.Use(middleware.VerifyAuth)
+		verifyAuth.Use(middleware.VerifyAuthAndUser)
 		{
-			verifyAuth.GET(config.Config.APIs.ProjectAllURI, controller.ReadAllProjects)
-			verifyAuth.POST(config.Config.APIs.ProjectURI, controller.CreateProject)
-			verifyAuth.GET(config.Config.APIs.UserLogoutURI, controller.Logout)
+			verifyAuth.GET("/project/all", controller.ReadAllProjects)
+			verifyAuth.POST("/project", controller.CreateProject)
+			verifyAuth.GET("/user/logout", controller.Logout)
 
 			verifyFCMCondition := verifyAuth.Group("")
 			verifyFCMCondition.Use(middleware.VerifyFCMCondition)
 			{
-				verifyFCMCondition.POST(config.Config.APIs.TopicSubscribeURI, controller.TopicSubscribe)
-				verifyFCMCondition.POST(config.Config.APIs.TopicUnsubscribeURI, controller.TopicUnsubscribe)
-				verifyFCMCondition.POST(config.Config.APIs.PushMessageURI, controller.PushMessage)
-				verifyFCMCondition.POST(config.Config.APIs.PushMulticastURI, controller.PushMulticast)
+				verifyFCMCondition.POST("/topic/subscribe", controller.TopicSubscribe)
+				verifyFCMCondition.POST("/topic/unsubscribe", controller.TopicUnsubscribe)
+				verifyFCMCondition.POST("/push/message", controller.PushMessage)
+				verifyFCMCondition.POST("/push/multicast", controller.PushMulticast)
 			}
 
-			validateProjectID := verifyAuth.Group(fmt.Sprintf("%s/:id", config.Config.APIs.ProjectURI))
+			validateProjectID := verifyAuth.Group(fmt.Sprintf("%s/:id", "/project"))
 			validateProjectID.Use(middleware.InputProjectID)
 			{
 				validateProjectID.GET("", controller.ReadProject)
@@ -48,11 +47,13 @@ func InitRouter() *gin.Engine {
 			}
 		}
 
-		validateUser := apiURL.Group("")
+		apiURL.POST("/user/refresh", controller.RefreshTokens)
+
+		validateUser := apiURL.Group("/user")
 		validateUser.Use(middleware.ValidateUser)
 		{
-			validateUser.POST(config.Config.APIs.UserLoginURI, controller.Login)
-			validateUser.POST(config.Config.APIs.UserSignupURI, controller.Signup)
+			validateUser.POST("/login", controller.Login)
+			validateUser.POST("/signup", controller.Signup)
 		}
 	}
 

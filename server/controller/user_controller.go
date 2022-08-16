@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/knight7024/go-push-server/domain/response"
 	"github.com/knight7024/go-push-server/domain/user"
 	"github.com/knight7024/go-push-server/server/handler"
 )
@@ -13,10 +14,10 @@ import (
 // @Accept 		json
 // @Produce 	json
 // @Param 		User	body 		user.User					true	"User 예시"
-// @Success 	200		{object}	response.AuthTokens
+// @Success 	200		{object}	user.AuthTokens
 // @Failure 	400 	{object} 	response.errorResponse
 // @Failure 	401 	{object} 	response.errorResponse
-// @Failure 	500		{object} 	response.AuthTokens
+// @Failure 	500		{object} 	response.errorResponse
 // @Router 		/api/user/login [post]
 func Login(c *gin.Context) {
 	u, _ := c.Get("user")
@@ -50,7 +51,7 @@ func Logout(c *gin.Context) {
 // @Accept 		json
 // @Produce 	json
 // @Param 		User	body 		user.User					true	"User 예시"
-// @Success 	201		{object}	response.AuthTokens
+// @Success 	201
 // @Failure 	400 	{object} 	response.errorResponse
 // @Failure 	409 	{object} 	response.errorResponse
 // @Failure 	500		{object} 	response.errorResponse
@@ -60,5 +61,31 @@ func Signup(c *gin.Context) {
 	req := u.(*user.User)
 
 	res := handler.SignupHandler(req)
+	c.JSON(res.GetStatusCode(), res)
+}
+
+// RefreshTokens godoc
+// @Summary		Access 및 Refresh Token 갱신
+// @Description Refresh Token을 이용해 만료된 Access 혹은 Refresh Token을 갱신할 때 사용합니다.
+// @Tags 		User
+// @Accept 		json
+// @Produce 	json
+// @Param 		RefreshToken	body 		user.RefreshToken				true	"RefreshToken 예시"
+// @Success 	201				{object}	user.AuthTokens
+// @Failure 	400 			{object} 	response.errorResponse
+// @Failure 	409 			{object} 	response.errorResponse
+// @Failure 	500				{object} 	response.errorResponse
+// @Router 		/api/user/refresh [post]
+func RefreshTokens(c *gin.Context) {
+	var req *user.RefreshToken
+	if err := c.ShouldBindJSON(&req); err != nil {
+		ex := response.ErrorBuilder.NewWithError(response.BadRequestError).
+			Reason(err.Error()).
+			Build()
+		c.JSON(ex.GetStatusCode(), ex)
+		return
+	}
+
+	res := handler.RefreshTokensHandler(req)
 	c.JSON(res.GetStatusCode(), res)
 }

@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/go-redis/redis/v8"
 	rdb "github.com/knight7024/go-push-server/common/redis"
@@ -49,9 +50,9 @@ func LoginHandler(req *user.User) response.Response {
 		}
 
 		return response.SuccessBuilder.New(http.StatusOK).
-			Data(&response.AuthTokens{
-				AccessToken:  accessToken,
-				RefreshToken: refreshToken,
+			Data(&user.AuthTokens{
+				AccessToken:  &user.AccessToken{AccessToken: accessToken},
+				RefreshToken: &user.RefreshToken{RefreshToken: refreshToken},
 			}).
 			Build()
 	} else if err != nil {
@@ -61,9 +62,9 @@ func LoginHandler(req *user.User) response.Response {
 	}
 
 	return response.SuccessBuilder.New(http.StatusOK).
-		Data(&response.AuthTokens{
-			AccessToken:  accessToken,
-			RefreshToken: refreshToken,
+		Data(&user.AuthTokens{
+			AccessToken:  &user.AccessToken{AccessToken: accessToken},
+			RefreshToken: &user.RefreshToken{RefreshToken: refreshToken},
 		}).
 		Build()
 }
@@ -91,9 +92,6 @@ func SignupHandler(req *user.User) response.Response {
 			Build()
 	}
 
-	accessToken, _ := util.AccessTokenBuilder.New().
-		Set("uid", ret.ID).
-		Build()
 	refreshToken, _ := util.RefreshTokenBuilder.New().
 		Set("uid", ret.ID).
 		Build()
@@ -104,10 +102,55 @@ func SignupHandler(req *user.User) response.Response {
 			Build()
 	}
 
+	return response.SuccessBuilder.New(http.StatusCreated).
+		Message("가입이 완료되었습니다. 승인을 대기해주세요.").
+		Build()
+}
+
+func RefreshTokensHandler(req *user.RefreshToken) response.Response {
+	payload, err := util.Validate(util.RefreshToken(req.RefreshToken))
+	if err != nil {
+		return response.ErrorBuilder.NewWithError(response.InvalidTokenError).
+			Build()
+	}
+
+	var uid int
+	switch uidType := payload.Get("uid").(type) {
+	case json.Number:
+		t, _ := uidType.Int64()
+		uid = int(t)
+	case float64:
+		uid = int(uidType)
+	default:
+		return response.ErrorBuilder.NewWithError(response.InvalidTokenError).
+			Build()
+	}
+	if result, err := rdb.Connection.Get(context.TODO(), fmt.Sprintf(refreshTokenCacheKey, uid)).Result(); result != "" && result != req.RefreshToken {
+		return response.ErrorBuilder.NewWithError(response.InvalidTokenError).
+			Build()
+	} else if err != nil {
+		return response.ErrorBuilder.NewWithError(response.RedisServerError).
+			Reason(err.Error()).
+			Build()
+	}
+
+	accessToken, _ := util.AccessTokenBuilder.New().
+		Set("uid", uid).
+		Build()
+	refreshToken, _ := util.RefreshTokenBuilder.New().
+		Set("uid", uid).
+		Build()
+	setCmd := rdb.Connection.Set(context.TODO(), fmt.Sprintf(refreshTokenCacheKey, uid), refreshToken, util.RefreshTokenDuration)
+	if setCmd.Err() != nil {
+		return response.ErrorBuilder.NewWithError(response.RedisServerError).
+			Reason(err.Error()).
+			Build()
+	}
+
 	return response.SuccessBuilder.New(http.StatusOK).
-		Data(&response.AuthTokens{
-			AccessToken:  accessToken,
-			RefreshToken: refreshToken,
+		Data(&user.AuthTokens{
+			AccessToken:  &user.AccessToken{AccessToken: accessToken},
+			RefreshToken: &user.RefreshToken{RefreshToken: refreshToken},
 		}).
 		Build()
 }

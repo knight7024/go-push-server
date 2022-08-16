@@ -17,40 +17,57 @@ type AccessToken string
 type RefreshToken string
 
 type JWT interface {
-	Token | AccessToken | RefreshToken
-	String() string
+	ToString() string
+	GetType() string
 }
 
-func (t Token) String() string {
+func (t Token) ToString() string {
 	return string(t)
 }
 
-func (t AccessToken) String() string {
+func (t AccessToken) ToString() string {
 	return string(t)
 }
 
-func (t RefreshToken) String() string {
+func (t RefreshToken) ToString() string {
 	return string(t)
 }
 
-func Validate(token string) (*claimsBuilder, error) {
-	parsedToken, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
+func (t Token) GetType() string {
+	return "normal"
+}
+
+func (t AccessToken) GetType() string {
+	return "access"
+}
+
+func (t RefreshToken) GetType() string {
+	return "refresh"
+}
+
+func Validate(token JWT) (*claimsBuilder, error) {
+	parsedToken, err := jwt.Parse(token.ToString(), func(t *jwt.Token) (interface{}, error) {
 		return []byte(config.Config.Core.SecretKey), nil
 	}, jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Alg()}))
 	if err != nil {
 		return nil, err
 	}
-	return extractPayload(parsedToken)
+	return extractPayload(parsedToken, token)
 }
 
-func extractPayload(token *jwt.Token) (*claimsBuilder, error) {
-	if claims, ok := token.Claims.(jwt.MapClaims); ok {
-		if !claims.VerifyIssuer(config.Config.Core.AppName, true) {
+func extractPayload(parsedToken *jwt.Token, token JWT) (*claimsBuilder, error) {
+	if claims, ok := parsedToken.Claims.(jwt.MapClaims); ok {
+		if !claims.VerifyIssuer(config.Config.Core.AppName, true) || !(verifySubject(claims, token)) {
 			return nil, errors.New("invalid token")
 		}
 		return &claimsBuilder{claims}, nil
 	}
 	return nil, errors.New("failed parsing payload")
+}
+
+func verifySubject(claims jwt.MapClaims, token JWT) bool {
+	sub, _ := claims["sub"].(string)
+	return sub == token.GetType()
 }
 
 type claimsBuilder struct {
@@ -77,56 +94,59 @@ var TokenBuilder tokenBuilder
 var AccessTokenBuilder accessTokenBuilder
 var RefreshTokenBuilder refreshTokenBuilder
 
-func (tokenBuilder) New() *claimsBuilder {
+func (b tokenBuilder) New() *claimsBuilder {
 	return (&claimsBuilder{make(map[string]interface{})}).
-		issuer(config.Config.Core.AppName)
+		setIssuer(config.Config.Core.AppName).
+		setSubject(b.GetType())
 }
 
-func (accessTokenBuilder) New() *specialClaimsBuilder {
+func (b accessTokenBuilder) New() *specialClaimsBuilder {
 	builder := &specialClaimsBuilder{make(map[string]interface{})}
 	builder.claims["iss"] = config.Config.Core.AppName
 	builder.claims["exp"] = &jwt.NumericDate{Time: time.Now().Add(AccessTokenDuration)}
+	builder.claims["sub"] = b.GetType()
 	return builder
 }
 
-func (refreshTokenBuilder) New() *specialClaimsBuilder {
+func (b refreshTokenBuilder) New() *specialClaimsBuilder {
 	builder := &specialClaimsBuilder{make(map[string]interface{})}
 	builder.claims["iss"] = config.Config.Core.AppName
 	builder.claims["exp"] = &jwt.NumericDate{Time: time.Now().Add(RefreshTokenDuration)}
+	builder.claims["sub"] = b.GetType()
 	return builder
 }
 
-func (cb *claimsBuilder) issuer(iss string) *claimsBuilder {
+func (cb *claimsBuilder) setIssuer(iss string) *claimsBuilder {
 	cb.claims["iss"] = iss
 	return cb
 }
 
-func (cb *claimsBuilder) Subject(sub string) *claimsBuilder {
+func (cb *claimsBuilder) setSubject(sub string) *claimsBuilder {
 	cb.claims["sub"] = sub
 	return cb
 }
 
-func (cb *claimsBuilder) Audience(aud ...string) *claimsBuilder {
+func (cb *claimsBuilder) SetAudience(aud ...string) *claimsBuilder {
 	cb.claims["aud"] = aud
 	return cb
 }
 
-func (cb *claimsBuilder) ExpiresAt(exp time.Time) *claimsBuilder {
+func (cb *claimsBuilder) SetExpiresAt(exp time.Time) *claimsBuilder {
 	cb.claims["exp"] = &jwt.NumericDate{Time: exp}
 	return cb
 }
 
-func (cb *claimsBuilder) NotBefore(nbf time.Time) *claimsBuilder {
+func (cb *claimsBuilder) SetNotBefore(nbf time.Time) *claimsBuilder {
 	cb.claims["nbf"] = &jwt.NumericDate{Time: nbf}
 	return cb
 }
 
-func (cb *claimsBuilder) IssuedAt(iat time.Time) *claimsBuilder {
+func (cb *claimsBuilder) SetIssuedAt(iat time.Time) *claimsBuilder {
 	cb.claims["iat"] = &jwt.NumericDate{Time: iat}
 	return cb
 }
 
-func (cb *claimsBuilder) ID(jti string) *claimsBuilder {
+func (cb *claimsBuilder) SetID(jti string) *claimsBuilder {
 	cb.claims["jti"] = jti
 	return cb
 }
@@ -140,27 +160,27 @@ func (cb *claimsBuilder) Set(key string, value any) *claimsBuilder {
 	return cb
 }
 
-func (cb *specialClaimsBuilder) Subject(sub string) *specialClaimsBuilder {
+func (cb *specialClaimsBuilder) setSubject(sub string) *specialClaimsBuilder {
 	cb.claims["sub"] = sub
 	return cb
 }
 
-func (cb *specialClaimsBuilder) Audience(aud ...string) *specialClaimsBuilder {
+func (cb *specialClaimsBuilder) SetAudience(aud ...string) *specialClaimsBuilder {
 	cb.claims["aud"] = aud
 	return cb
 }
 
-func (cb *specialClaimsBuilder) NotBefore(nbf time.Time) *specialClaimsBuilder {
+func (cb *specialClaimsBuilder) SetNotBefore(nbf time.Time) *specialClaimsBuilder {
 	cb.claims["nbf"] = &jwt.NumericDate{Time: nbf}
 	return cb
 }
 
-func (cb *specialClaimsBuilder) IssuedAt(iat time.Time) *specialClaimsBuilder {
+func (cb *specialClaimsBuilder) SetIssuedAt(iat time.Time) *specialClaimsBuilder {
 	cb.claims["iat"] = &jwt.NumericDate{Time: iat}
 	return cb
 }
 
-func (cb *specialClaimsBuilder) ID(jti string) *specialClaimsBuilder {
+func (cb *specialClaimsBuilder) SetID(jti string) *specialClaimsBuilder {
 	cb.claims["jti"] = jti
 	return cb
 }
