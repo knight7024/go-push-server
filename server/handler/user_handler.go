@@ -42,10 +42,10 @@ func LoginHandler(req *user.User) response.Response {
 		refreshToken, _ = util.RefreshTokenBuilder.New().
 			Set("uid", ret.ID).
 			Build()
-		setCmd := rdb.Connection.Set(context.TODO(), fmt.Sprintf(refreshTokenCacheKey, ret.ID), refreshToken, util.RefreshTokenDuration)
-		if setCmd.Err() != nil {
+		cmdErr := rdb.Connection.Set(context.TODO(), fmt.Sprintf(refreshTokenCacheKey, ret.ID), refreshToken, util.RefreshTokenDuration).Err()
+		if cmdErr != nil {
 			return response.ErrorBuilder.NewWithError(response.RedisServerError).
-				Reason(err.Error()).
+				Reason(cmdErr.Error()).
 				Build()
 		}
 
@@ -95,10 +95,10 @@ func SignupHandler(req *user.User) response.Response {
 	refreshToken, _ := util.RefreshTokenBuilder.New().
 		Set("uid", ret.ID).
 		Build()
-	setCmd := rdb.Connection.Set(context.TODO(), fmt.Sprintf(refreshTokenCacheKey, ret.ID), refreshToken, util.RefreshTokenDuration)
-	if setCmd.Err() != nil {
+	cmdErr := rdb.Connection.Set(context.TODO(), fmt.Sprintf(refreshTokenCacheKey, ret.ID), refreshToken, util.RefreshTokenDuration).Err()
+	if cmdErr != nil {
 		return response.ErrorBuilder.NewWithError(response.RedisServerError).
-			Reason(err.Error()).
+			Reason(cmdErr.Error()).
 			Build()
 	}
 
@@ -140,10 +140,10 @@ func RefreshTokensHandler(req *user.RefreshToken) response.Response {
 	refreshToken, _ := util.RefreshTokenBuilder.New().
 		Set("uid", uid).
 		Build()
-	setCmd := rdb.Connection.Set(context.TODO(), fmt.Sprintf(refreshTokenCacheKey, uid), refreshToken, util.RefreshTokenDuration)
-	if setCmd.Err() != nil {
+	cmdErr := rdb.Connection.Set(context.TODO(), fmt.Sprintf(refreshTokenCacheKey, uid), refreshToken, util.RefreshTokenDuration).Err()
+	if cmdErr != nil {
 		return response.ErrorBuilder.NewWithError(response.RedisServerError).
-			Reason(err.Error()).
+			Reason(cmdErr.Error()).
 			Build()
 	}
 
