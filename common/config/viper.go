@@ -10,8 +10,6 @@ type ViperConfig struct {
 
 type Core struct {
 	AppName   string `mapstructure:"app_name"`
-	Port      int    `mapstructure:"port"`
-	Env       string `mapstructure:"env"`
 	SecretKey string `mapstructure:"secret_key"`
 }
 
