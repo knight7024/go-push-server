@@ -1,0 +1,59 @@
+services:
+    go-push-server:
+      build:
+        dockerfile: ./Dockerfile
+      restart: unless-stopped
+      environment:
+        - PORT=${WEB_PORT}
+      ports:
+        - ${WEB_PORT}:${WEB_PORT}
+      networks:
+        - app-network
+      depends_on:
+        - mysql
+        - redis
+      extra_hosts:
+        - "host.docker.internal:host-gateway"
+      
+    mysql:
+      image: mysql:8.0.30
+      container_name: mysql-8.0.30
+      command:
+        - --default-authentication-plugin=mysql_native_password
+      restart: unless-stopped
+      environment:
+        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+        - TZ=Asia/Seoul
+      ports:
+        - ${MYSQL_PORT}:3306
+      networks:
+        - app-network
+      volumes:
+        - data-volume:/var/lib/mysql
+      extra_hosts:
+        - "host.docker.internal:host-gateway"
+
+    redis:
+      image: redis:6.2.7
+      container_name: redis-6.2.7
+      command:
+        - /usr/local/etc/redis/redis.conf
+        - --requirepass ${REDIS_PASSWORD}
+      restart: unless-stopped
+      environment:
+        - TZ=Asia/Seoul
+      ports:
+        - ${REDIS_PORT}:6379
+      networks:
+        - app-network
+      volumes:
+        - /usr/local/docker/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+      extra_hosts:
+        - "host.docker.internal:host-gateway"
+
+volumes:
+    data-volume:
+
+networks:
+  app-network:
+    driver: bridge
