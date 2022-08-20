@@ -7,6 +7,7 @@ import (
 	"github.com/knight7024/go-push-server/server/middleware"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"net/http"
 )
 
 func InitRouter() *gin.Engine {
@@ -17,6 +18,11 @@ func InitRouter() *gin.Engine {
 
 	// Swagger URL Mapping
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	// Health Check URL Mapping
+	router.GET("/health", func(c *gin.Context) {
+		c.Status(http.StatusOK)
+	})
 
 	// API URL Mapping
 	apiURL := router.Group("/api")
