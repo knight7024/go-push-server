@@ -2,7 +2,7 @@ core:
   app_name: ""
   port: 8080
   env: "dev" # dev / stage / prod
-  secret_key:
+  secret_key: ""
 
 datasource:
   username: ""
