@@ -12,9 +12,6 @@ services:
       depends_on:
         - mysql
         - redis
-        - ws
-      volumes:
-        - data-volume
       extra_hosts:
         - "host.docker.internal:host-gateway"
       
@@ -25,14 +22,14 @@ services:
         - --default-authentication-plugin=mysql_native_password
       restart: always
       environment:
-        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD} # MySQL root 비밀번호
+        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
         - TZ=Asia/Seoul
       ports:
-        - ${MYSQL_PORT}:${MYSQL_PORT}
+        - ${MYSQL_PORT}:3306
       networks:
         - app-network
       volumes:
-        - data-volume:/var/lib/mysql # 호스트:컨테이너
+        - data-volume:/var/lib/mysql
       extra_hosts:
         - "host.docker.internal:host-gateway"
 
@@ -40,33 +37,17 @@ services:
       image: redis:6.2.7
       container_name: redis-6.2.7
       command:
-        - --requirepass ${REDIS_PASSWORD}
         - /usr/local/etc/redis/redis.conf
+        - --requirepass ${REDIS_PASSWORD}
       restart: always
       environment:
         - TZ=Asia/Seoul
       ports:
-        - ${REDIS_PORT}:${REDIS_PORT}
+        - ${REDIS_PORT}:6379
       networks:
         - app-network
       volumes:
-        - /usr/docker/redis/redis.conf:/usr/local/etc/redis/redis.conf # 호스트:컨테이너
-      extra_hosts:
-        - "host.docker.internal:host-gateway"
-
-    ws:
-      image: haproxy:2.6.2
-      container_name: haproxy-2.6.2
-      restart: always
-      environment:
-        - TZ=Asia/Seoul
-      ports:
-        - 80:80
-        - 443:443
-      networks:
-        - app-network
-      volumes:
-        - /usr/docker/haproxy/haproxy.cfg:/etc/haproxy/haproxy.cfg # 호스트:컨테이너
+        - /usr/docker/redis/redis.conf:/usr/local/etc/redis/redis.conf
       extra_hosts:
         - "host.docker.internal:host-gateway"
 

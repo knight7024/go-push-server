@@ -13,5 +13,5 @@ datasource:
 redis:
   username: ""
   password: ""
-  address: """
+  address: ""
   dbname: 0
