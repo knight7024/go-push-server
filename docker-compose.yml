@@ -2,6 +2,7 @@ services:
     go-push-server:
       build:
         dockerfile: ./Dockerfile
+      container_name: go-push-server
       restart: unless-stopped
       environment:
         - PORT=${WEB_PORT}
@@ -29,7 +30,7 @@ services:
       networks:
         - app-network
       volumes:
-        - data-volume:/var/lib/mysql
+        - /usr/local/docker/mysql:/var/lib/mysql
       extra_hosts:
         - "host.docker.internal:host-gateway"
 
@@ -39,6 +40,7 @@ services:
       command:
         - /usr/local/etc/redis/redis.conf
         - --requirepass ${REDIS_PASSWORD}
+        - --bind "0.0.0.0"
       restart: unless-stopped
       environment:
         - TZ=Asia/Seoul
@@ -47,12 +49,9 @@ services:
       networks:
         - app-network
       volumes:
-        - /usr/local/docker/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+        - /usr/local/docker/redis:/usr/local/etc/redis
       extra_hosts:
         - "host.docker.internal:host-gateway"
-
-volumes:
-    data-volume:
 
 networks:
   app-network:
