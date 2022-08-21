@@ -14,7 +14,7 @@ Go v1.19으로 개발되었습니다.
 ### 1. Redis
 ```bash
 sudo mkdir -p /usr/local/docker/redis
-sudo wget http://download.redis.io/redis-stable/redis.conf -O /usr/local/docker/redis/redis.conf
+sudo wget https://raw.githubusercontent.com/redis/redis/6.2/redis.conf -O /usr/local/docker/redis/redis.conf
 ```
 
 ### 2. Docker

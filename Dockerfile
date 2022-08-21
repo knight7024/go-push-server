@@ -23,7 +23,6 @@ RUN apk --no-cache add tzdata && \
 COPY --from=base /usr/src/app/bin/main ./main
 COPY --from=base /usr/src/app/application_config.yaml ./application_config.yaml
 
-ENV GIN_MODE=release \
-	PORT=${WEB_PORT}
+ENV GIN_MODE=release
 
 CMD ["./main"]
