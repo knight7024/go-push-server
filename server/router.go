@@ -18,6 +18,7 @@ func InitRouter() *gin.Engine {
 	// 기본 엔진으로 gin 설정
 	// Reverse Proxy 통해서 Request 들어오므로 localhost만 신뢰
 	router := gin.Default()
+	router.Use(middleware.CORS())
 	_ = router.SetTrustedProxies([]string{"127.0.0.1"})
 
 	// Swagger URL Mapping
@@ -29,7 +30,6 @@ func InitRouter() *gin.Engine {
 
 	// API URL Mapping
 	apiURL := router.Group("/api")
-	apiURL.Use(middleware.CORS)
 	{
 		verifyAuth := apiURL.Group("")
 		verifyAuth.Use(middleware.VerifyAuthAndUser)
