@@ -10,6 +10,10 @@ import (
 	"net/http"
 )
 
+func healthCheck(c *gin.Context) {
+	c.Status(http.StatusOK)
+}
+
 func InitRouter() *gin.Engine {
 	// 기본 엔진으로 gin 설정
 	// Reverse Proxy 통해서 Request 들어오므로 localhost만 신뢰
@@ -21,9 +25,8 @@ func InitRouter() *gin.Engine {
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Health Check URL Mapping
-	router.GET("/health", func(c *gin.Context) {
-		c.Status(http.StatusOK)
-	})
+	router.GET("/health", healthCheck)
+	router.HEAD("/health", healthCheck)
 
 	// API URL Mapping
 	apiURL := router.Group("/api")
@@ -48,7 +51,8 @@ func InitRouter() *gin.Engine {
 			validateProjectID.Use(middleware.InputProjectID)
 			{
 				validateProjectID.GET("", controller.ReadProject)
-				validateProjectID.PUT("", controller.UpdateProject)
+				validateProjectID.PATCH("", controller.UpdateProject)
+				validateProjectID.PATCH("/client-key", controller.UpdateProjectClientKey)
 				validateProjectID.DELETE("", controller.DeleteProject)
 			}
 		}

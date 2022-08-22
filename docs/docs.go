@@ -180,7 +180,57 @@ const docTemplate = `{
                     }
                 }
             },
-            "put": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "유저의 프로젝트 하나를 삭제할 때 사용합니다.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Project"
+                ],
+                "summary": "단일 프로젝트 삭제",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Project ID",
+                        "name": "project_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
                 "security": [
                     {
                         "BearerAuth": []
@@ -241,14 +291,16 @@ const docTemplate = `{
                         }
                     }
                 }
-            },
-            "delete": {
+            }
+        },
+        "/api/project/{project_id}/client-key": {
+            "patch": {
                 "security": [
                     {
                         "BearerAuth": []
                     }
                 ],
-                "description": "유저의 프로젝트 하나를 삭제할 때 사용합니다.",
+                "description": "프로젝트의 Client Key를 새롭게 갱신할 때 사용합니다.",
                 "consumes": [
                     "application/json"
                 ],
@@ -258,7 +310,7 @@ const docTemplate = `{
                 "tags": [
                     "Project"
                 ],
-                "summary": "단일 프로젝트 삭제",
+                "summary": "프로젝트의 Client Key 갱신",
                 "parameters": [
                     {
                         "type": "integer",
@@ -269,8 +321,11 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "204": {
-                        "description": "No Content"
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.OnlyClientKey"
+                        }
                     },
                     "401": {
                         "description": "Unauthorized",
@@ -1276,6 +1331,14 @@ const docTemplate = `{
                 },
                 "success_count": {
                     "type": "integer"
+                }
+            }
+        },
+        "response.OnlyClientKey": {
+            "type": "object",
+            "properties": {
+                "client_key": {
+                    "type": "string"
                 }
             }
         },
