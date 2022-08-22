@@ -87,7 +87,7 @@ func ReadProject(c *gin.Context) {
 // @Failure 	401 			{object} 	response.errorResponse
 // @Failure 	404 			{object} 	response.errorResponse
 // @Failure 	500 			{object} 	response.errorResponse
-// @Router 		/api/project/{project_id} [put]
+// @Router 		/api/project/{project_id} [patch]
 func UpdateProject(c *gin.Context) {
 	uid, pid := c.GetInt("uid"), c.GetInt("pid")
 	var req *project.Project
@@ -100,6 +100,26 @@ func UpdateProject(c *gin.Context) {
 	}
 
 	res := handler.UpdateProjectHandler(uid, pid, req)
+	c.JSON(res.GetStatusCode(), res)
+}
+
+// UpdateProjectClientKey godoc
+// @Summary		프로젝트의 Client Key 갱신
+// @Description 프로젝트의 Client Key를 새롭게 갱신할 때 사용합니다.
+// @Tags 		Project
+// @Accept 		json
+// @Produce 	json
+// @Param 		project_id		path 		int							true	"Project ID"
+// @Security	BearerAuth
+// @Success 	200 			{object} 	response.OnlyClientKey
+// @Failure 	401 			{object} 	response.errorResponse
+// @Failure 	404 			{object} 	response.errorResponse
+// @Failure 	500 			{object} 	response.errorResponse
+// @Router 		/api/project/{project_id}/client-key [patch]
+func UpdateProjectClientKey(c *gin.Context) {
+	uid, pid := c.GetInt("uid"), c.GetInt("pid")
+
+	res := handler.UpdateProjectClientKeyHandler(uid, pid)
 	c.JSON(res.GetStatusCode(), res)
 }
 

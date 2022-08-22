@@ -2,6 +2,7 @@ package project
 
 import (
 	"context"
+	"github.com/google/uuid"
 	"github.com/knight7024/go-push-server/common/mysql"
 	"github.com/knight7024/go-push-server/common/util"
 	"github.com/knight7024/go-push-server/ent"
@@ -72,6 +73,20 @@ func UpdateOneByUserID(ctx context.Context, uid int, pid int, project *Project) 
 		return new(ent.NotFoundError)
 	}
 	return nil
+}
+
+func UpdateClientKeyByUserID(ctx context.Context, uid int, pid int) (string, error) {
+	clientKey := strings.ToUpper(strings.ReplaceAll(uuid.NewString(), "-", ""))
+	update := mysql.Connection.Project.Update()
+	update.SetClientKey(clientKey)
+	if count, err := update.
+		Where(predicate.And(predicate.ID(pid), predicate.UserID(uid))).
+		Save(ctx); err != nil {
+		return "", err
+	} else if count == 0 {
+		return "", new(ent.NotFoundError)
+	}
+	return clientKey, nil
 }
 
 func DeleteOneByUserID(ctx context.Context, pid int) error {

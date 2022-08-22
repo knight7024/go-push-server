@@ -11,8 +11,8 @@ var (
 	// ProjectsColumns holds the columns for the "projects" table.
 	ProjectsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "created_at", Type: field.TypeTime, Default: "CURRENT_TIMESTAMP", SchemaType: map[string]string{"mysql": "DATETIME", "postgres": "TIMESTAMP", "sqlite3": "DATETIME"}},
-		{Name: "updated_at", Type: field.TypeTime, Default: "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP", SchemaType: map[string]string{"mysql": "DATETIME", "postgres": "TIMESTAMP", "sqlite3": "DATETIME"}},
+		{Name: "created_at", Type: field.TypeTime, Default: "CURRENT_TIMESTAMP"},
+		{Name: "updated_at", Type: field.TypeTime, Default: "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"},
 		{Name: "project_name", Type: field.TypeString, Size: 128},
 		{Name: "project_id", Type: field.TypeString, Unique: true},
 		{Name: "credentials", Type: field.TypeBytes},
