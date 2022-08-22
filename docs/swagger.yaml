@@ -348,6 +348,11 @@ definitions:
       success_count:
         type: integer
     type: object
+  response.OnlyClientKey:
+    properties:
+      client_key:
+        type: string
+    type: object
   response.errorResponse:
     properties:
       data:
@@ -503,7 +508,7 @@ paths:
       summary: 단일 프로젝트 읽기
       tags:
       - Project
-    put:
+    patch:
       consumes:
       - application/json
       description: 유저의 프로젝트 하나를 수정할 때 사용합니다.
@@ -541,6 +546,41 @@ paths:
       security:
       - BearerAuth: []
       summary: 단일 프로젝트 수정
+      tags:
+      - Project
+  /api/project/{project_id}/client-key:
+    patch:
+      consumes:
+      - application/json
+      description: 프로젝트의 Client Key를 새롭게 갱신할 때 사용합니다.
+      parameters:
+      - description: Project ID
+        in: path
+        name: project_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.OnlyClientKey'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+      security:
+      - BearerAuth: []
+      summary: 프로젝트의 Client Key 갱신
       tags:
       - Project
   /api/project/all:

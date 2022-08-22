@@ -46,6 +46,20 @@ func (pu *ProjectUpdate) SetCredentials(b []byte) *ProjectUpdate {
 	return pu
 }
 
+// SetClientKey sets the "client_key" field.
+func (pu *ProjectUpdate) SetClientKey(s string) *ProjectUpdate {
+	pu.mutation.SetClientKey(s)
+	return pu
+}
+
+// SetNillableClientKey sets the "client_key" field if the given value is not nil.
+func (pu *ProjectUpdate) SetNillableClientKey(s *string) *ProjectUpdate {
+	if s != nil {
+		pu.SetClientKey(*s)
+	}
+	return pu
+}
+
 // SetUserID sets the "user_id" field.
 func (pu *ProjectUpdate) SetUserID(i int) *ProjectUpdate {
 	pu.mutation.SetUserID(i)
@@ -154,6 +168,11 @@ func (pu *ProjectUpdate) check() error {
 			return &ValidationError{Name: "credentials", err: fmt.Errorf(`ent: validator failed for field "Project.credentials": %w`, err)}
 		}
 	}
+	if v, ok := pu.mutation.ClientKey(); ok {
+		if err := project.ClientKeyValidator(v); err != nil {
+			return &ValidationError{Name: "client_key", err: fmt.Errorf(`ent: validator failed for field "Project.client_key": %w`, err)}
+		}
+	}
 	if v, ok := pu.mutation.UserID(); ok {
 		if err := project.UserIDValidator(v); err != nil {
 			return &ValidationError{Name: "user_id", err: fmt.Errorf(`ent: validator failed for field "Project.user_id": %w`, err)}
@@ -209,6 +228,13 @@ func (pu *ProjectUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Type:   field.TypeBytes,
 			Value:  value,
 			Column: project.FieldCredentials,
+		})
+	}
+	if value, ok := pu.mutation.ClientKey(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: project.FieldClientKey,
 		})
 	}
 	if pu.mutation.UserCleared() {
@@ -280,6 +306,20 @@ func (puo *ProjectUpdateOne) SetProjectID(s string) *ProjectUpdateOne {
 // SetCredentials sets the "credentials" field.
 func (puo *ProjectUpdateOne) SetCredentials(b []byte) *ProjectUpdateOne {
 	puo.mutation.SetCredentials(b)
+	return puo
+}
+
+// SetClientKey sets the "client_key" field.
+func (puo *ProjectUpdateOne) SetClientKey(s string) *ProjectUpdateOne {
+	puo.mutation.SetClientKey(s)
+	return puo
+}
+
+// SetNillableClientKey sets the "client_key" field if the given value is not nil.
+func (puo *ProjectUpdateOne) SetNillableClientKey(s *string) *ProjectUpdateOne {
+	if s != nil {
+		puo.SetClientKey(*s)
+	}
 	return puo
 }
 
@@ -404,6 +444,11 @@ func (puo *ProjectUpdateOne) check() error {
 			return &ValidationError{Name: "credentials", err: fmt.Errorf(`ent: validator failed for field "Project.credentials": %w`, err)}
 		}
 	}
+	if v, ok := puo.mutation.ClientKey(); ok {
+		if err := project.ClientKeyValidator(v); err != nil {
+			return &ValidationError{Name: "client_key", err: fmt.Errorf(`ent: validator failed for field "Project.client_key": %w`, err)}
+		}
+	}
 	if v, ok := puo.mutation.UserID(); ok {
 		if err := project.UserIDValidator(v); err != nil {
 			return &ValidationError{Name: "user_id", err: fmt.Errorf(`ent: validator failed for field "Project.user_id": %w`, err)}
@@ -476,6 +521,13 @@ func (puo *ProjectUpdateOne) sqlSave(ctx context.Context) (_node *Project, err e
 			Type:   field.TypeBytes,
 			Value:  value,
 			Column: project.FieldCredentials,
+		})
+	}
+	if value, ok := puo.mutation.ClientKey(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: project.FieldClientKey,
 		})
 	}
 	if puo.mutation.UserCleared() {

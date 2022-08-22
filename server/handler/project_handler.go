@@ -81,6 +81,21 @@ func UpdateProjectHandler(uid int, pid int, req *project.Project) response.Respo
 		Build()
 }
 
+func UpdateProjectClientKeyHandler(uid int, pid int) response.Response {
+	clientKey, err := project.UpdateClientKeyByUserID(context.TODO(), uid, pid)
+	if ent.IsNotFound(err) {
+		return response.DataNotFoundError
+	} else if err != nil {
+		return response.ErrorBuilder.NewWithError(response.DatabaseServerError).
+			Reason(err.Error()).
+			Build()
+	}
+
+	return response.SuccessBuilder.New(http.StatusOK).
+		Data(&response.OnlyClientKey{ClientKey: clientKey}).
+		Build()
+}
+
 func DeleteProjectHandler(pid int) response.Response {
 	err := project.DeleteOneByUserID(context.TODO(), pid)
 	if ent.IsNotFound(err) {

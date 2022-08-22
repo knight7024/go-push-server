@@ -20,9 +20,8 @@ func (Project) Fields() []ent.Field {
 		field.String("project_id").NotEmpty().Unique(),
 		field.Bytes("credentials").NotEmpty(),
 		field.String("client_key").NotEmpty().DefaultFunc(func() string {
-			clientKey, _ := uuid.NewRandom()
-			return strings.ToUpper(strings.ReplaceAll(clientKey.String(), "-", ""))
-		}).Immutable(),
+			return strings.ToUpper(strings.ReplaceAll(uuid.NewString(), "-", ""))
+		}),
 		field.Int("user_id").Positive().StructTag(`json:"-"`),
 	}
 }

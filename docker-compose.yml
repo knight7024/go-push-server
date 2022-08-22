@@ -49,6 +49,7 @@ services:
       networks:
         - app-network
       volumes:
+        - /usr/local/docker/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
         - /usr/local/docker/redis:/usr/local/etc/redis
       extra_hosts:
         - "host.docker.internal:host-gateway"
